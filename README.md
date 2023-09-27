@@ -7,7 +7,7 @@
 
 ##
 
-## Commands
+### Commands
 
 -   `/MountUp`: Summon a random mount based off zone priority. If your in a dragon riding zone, you will mount on a random dragon riding mount, if your in a flying zone, you will mount on a random flying mount, and if your in a ground zone, you will mount on a random ground or flying mount.
 
@@ -25,11 +25,11 @@
 
 -   `/MountUpHelp`: Prints all of the avaliable MountUp commands to the chat window.
 
-## Issues
+### Issues
 
 -   If you find any issues with the AddOn, please report them on our [MountUp GitHub Issues](https://github.com/mbb10324/MountUp/issues "MountUp GitHub Issues") page.
 
-## Contributing
+### Contributing
 
 If you would like to contribute to the AddOn:
 
@@ -38,6 +38,6 @@ If you would like to contribute to the AddOn:
 3.  Clone the repository from the [MountUp GitHub](https://github.com/mbb10324/MountUp "MountUp Github").
 4.  Start a new branch, make your changes, and submit a Pull Request.
 
-### Dependencies
+#### Dependencies
 
 -   This AddOn uses `AceAddon-3.0` and `LibStub` to store and manage profiles.
