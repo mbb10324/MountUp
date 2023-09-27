@@ -42,4 +42,4 @@ If you would like to contribute to the AddOn:
 
 #### Dependencies
 
--   MountUp uses `AceAddon-3.0` and `LibStub` to store and manage profiles.
+This AddOn uses `AceAddon-3.0` and `LibStub` to store and manage profiles.
