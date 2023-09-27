@@ -1,0 +1,16 @@
+## Interface: 10107
+## Version: 1.0.0
+## Title: MountUp
+## Notes: dynamic mount selector
+## Author: Miles Breman
+## OptionalDeps: Ace3
+## X-Embeds: Ace3
+## SavedVariables: MountUpDB
+
+# Libraries
+Libs\Libs.xml
+
+# Add-On
+MountUp_Config.lua
+MountUp_Favorites.lua
+MountUp.lua
