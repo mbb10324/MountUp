@@ -29,7 +29,7 @@ The MountUp addon provides various methods for summoning mounts, including rando
 
 ### Issues
 
--   If you find any issues with the AddOn, please report them on our [MountUp GitHub Issues](https://github.com/mbb10324/MountUp/issues "MountUp GitHub Issues") page.
+If you find any issues with the AddOn, please report them on our [MountUp GitHub Issues](https://github.com/mbb10324/MountUp/issues "MountUp GitHub Issues") page.
 
 ### Contributing
 
