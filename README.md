@@ -7,7 +7,7 @@
 
 ### About
 
-The MountUp addon provides various methods for summoning mounts, including random mounts, favorites, and more.
+The MountUp add-on provides various methods for summoning mounts, including random mounts, favorites, and more.
 
 ### Commands
 
@@ -29,11 +29,11 @@ The MountUp addon provides various methods for summoning mounts, including rando
 
 ### Issues
 
-If you find any issues with the AddOn, please report them on our [MountUp GitHub Issues](https://github.com/mbb10324/MountUp/issues "MountUp GitHub Issues") page.
+If you find any issues with MountUp, please report them on our [MountUp GitHub Issues](https://github.com/mbb10324/MountUp/issues "MountUp GitHub Issues") page.
 
 ### Contributing
 
-If you would like to contribute to the AddOn:
+If you would like to contribute to MountUp:
 
 1.  Read our [Code of Conduct](https://github.com/mbb10324/MountUp/tree/master/docs/code-of-conduct.md "MountUp Code of Conduct").
 2.  Read our [Contributing Guidelines](https://github.com/mbb10324/MountUp/tree/master/docs/contributing.md "MountUp Contributing Guidelines").
