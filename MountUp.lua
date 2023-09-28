@@ -52,8 +52,20 @@ frame:RegisterEvent("ZONE_CHANGED")
 frame:RegisterEvent("ZONE_CHANGED_INDOORS")
 frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 frame:RegisterEvent("PLAYER_LOGIN")
+frame:RegisterEvent("PLAYER_ALIVE")
+frame:RegisterEvent("PLAYER_UNGHOST")
+frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+frame:RegisterEvent("INSTANCE_GROUP_SIZE_CHANGED")
 frame:SetScript("OnEvent", function(self, event, ...)
-    if event == "ZONE_CHANGED" or event == "ZONE_CHANGED_INDOORS" or event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_LOGIN" then
+    if event == "ZONE_CHANGED" 
+    or event == "ZONE_CHANGED_INDOORS" 
+    or event == "ZONE_CHANGED_NEW_AREA" 
+    or event == "PLAYER_LOGIN" 
+    or event == "PLAYER_ALIVE"
+    or event == "PLAYER_UNGHOST"
+    or event == "PLAYER_REGEN_ENABLED"
+    or event == "INSTANCE_GROUP_SIZE_CHANGED"  
+    then
         UpdateMountLists()
     end
 end)
