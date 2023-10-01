@@ -1,20 +1,37 @@
+-------------------------------------------------------------------------------
+-- Title: MountUp Configuration Settings
+-- Order: 1
+-- Author: Miles Breman
+-- Description: This file sets up registration with Ace3, the options 
+-- menu, and the initialization for MountUp.
+-------------------------------------------------------------------------------
+
+-- Register with Ace3
 local name = ... or "MountUp";
 ---@class MountUp : AceAddon
 local MountUp = LibStub("AceAddon-3.0"):NewAddon(name, "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0");
 if not MountUp then return; end
 
-local allMountIDs = C_MountJournal.GetMountIDs() -- Get all mounts in player's collection
-local allOwnedMounts = {}
-_G.MountUpAllMountIDs = allMountIDs
+-- Get all mount IDs in the game and store them in a global variable
+local allMountIDs = C_MountJournal.GetMountIDs()
+_G.MountUpAllMountIDs = allMountIDs -- Expose allMountIDs globally
 
+-- Local Table to store all owned mounts
+local allOwnedMounts = {}
+
+-- Increment function for ordering options
 local count = 1
 local function increment()
     count = count + 1
     return count
 end
 
+-------------------------------------------------------------------------------
+-- Build Options Menu Using Ace3 
+-------------------------------------------------------------------------------
+
 function MountUp:GetOptions()
-    if self.options then return self.options end 
+    if self.options then return self.options end -- If options already exist, exit function
     local options = {
         type = "group",
         childGroups = "tab",
@@ -147,7 +164,7 @@ function MountUp:GetOptions()
                         type = "input",
                         name = "Search",
                         desc = "Search for a mount",
-                        get = function() return "" end, -- Return empty string, as this will be overwritten by user input
+                        get = function() return "" end, -- Default to empty string
                         set = function(_, value) MountUp:FilterMounts(value) end, -- Calls function to filter mounts
                         width = "full",
                     },
@@ -156,14 +173,14 @@ function MountUp:GetOptions()
                         type = "execute",
                         name = "Show All",
                         desc = "Show all of the mounts in your collection",
-                        func = function() MountUp:ShowAll() end,
+                        func = function() MountUp:ShowAll() end, -- Calls function to show all mounts
                     },
                     showFavorites = {
                         order = 3,
                         type = "execute",
                         name = "Show Favorites",
                         desc = "Show only your favorite mounts",
-                        func = function() MountUp:ShowFavorites() end,
+                        func = function() MountUp:ShowFavorites() end, -- Calls function to show only favorites
                     },
                     totalMounts = {
                         order = 4,
@@ -178,30 +195,42 @@ function MountUp:GetOptions()
     return options
 end
 
+-------------------------------------------------------------------------------
+-- Favorites tab helper functions 
+-------------------------------------------------------------------------------
+
+-- Filter mounts based on search query
 function MountUp:FilterMounts(searchQuery)
+    -- Set search query to lower case
     searchQuery = searchQuery:lower()
 
+    -- Get options 
     local options = self.options
+
+    -- Set no results found to true by default
     local noResultsFound = true
 
+    -- Loop through all owned mounts
     for _, mountInfo in ipairs(allOwnedMounts) do
         local creatureName = mountInfo.name
         local mountID = mountInfo.mountID
+        -- Set up a key for each mount
         local key = "mount_"..mountID
         
-        if searchQuery == "" or creatureName:lower():find(searchQuery) then
+        if searchQuery == "" or creatureName:lower():find(searchQuery) then -- Match found
             if options.args.favoritesTab.args[key] then
-                options.args.favoritesTab.args[key].hidden = false
-                noResultsFound = false
+                options.args.favoritesTab.args[key].hidden = false -- Show the matches
+                noResultsFound = false -- We found a match, so set no results found to false
             end
-        else
-            if options.args.favoritesTab.args[key] then
-                options.args.favoritesTab.args[key].hidden = true
+        else -- Doesnt Match
+            if options.args.favoritesTab.args[key] then 
+                options.args.favoritesTab.args[key].hidden = true -- Hide non-matches
             end
         end
     end
 
-    if noResultsFound then
+    if noResultsFound then  
+        -- If no results found, display a message
         options.args.favoritesTab.args.noResults = {
             type = "description",
             name = "No results found",
@@ -210,22 +239,27 @@ function MountUp:FilterMounts(searchQuery)
     end
 end
 
+-- Show all mounts
 function MountUp:ShowAll()
     local options = self.options
     if options and options.controls and options.controls.searchBox then
-        options.controls.searchBox:SetText("")
+        options.controls.searchBox:SetText("") -- Clear search box
     end
-    MountUp:FilterMounts("")
+    MountUp:FilterMounts("") -- Call the filter function with an empty string to show all mounts
 end
 
+-- Show only favorites
 function MountUp:ShowFavorites()
+    -- Start by showing all of the mounts to clear whatever state the user was in
     local options = self.options
     if options and options.controls and options.controls.searchBox then
         options.controls.searchBox:SetText("")
     end
     MountUp:FilterMounts("")
+    -- Loop through all owned mounts
     for _, mountInfo in ipairs(allOwnedMounts) do
         local mountID = mountInfo.mountID
+        -- Set up a key for each mount
         local key = "mount_"..mountID
 
         -- Hide the mount if it's not a favorite
@@ -235,24 +269,35 @@ function MountUp:ShowFavorites()
     end
 end
 
-local defaults = {
-    profile = {
-        favorites = {}
-    }
-}
-
+-------------------------------------------------------------------------------
+-- Initialization function
+-------------------------------------------------------------------------------
 
 function MountUp:OnInitialize()
+    -- Defined defaults for AceDB
+    local defaults = {
+        profile = {
+            favorites = {}
+        }
+    }
+    -- Player login event to fire our initializations 
     local frame = CreateFrame("FRAME", "SavedVarsFrame");
     frame:RegisterEvent("PLAYER_LOGIN")
     frame:SetScript("OnEvent", function(self, event, arg1)
         self:UnregisterEvent("PLAYER_LOGIN")
-        MountUp.db = LibStub("AceDB-3.0"):New("MountUpDB", defaults, true)
-        MountUp.db.RegisterCallback(MountUp, "OnProfileChanged", "OnProfileChanged")
+
+        MountUp.db = LibStub("AceDB-3.0"):New("MountUpDB", defaults, true) -- Define the database using AceDB
+
+        MountUp.db.RegisterCallback(MountUp, "OnProfileChanged", "OnProfileChanged") -- Register callback for profile changes
+
+        -- Print the current profile name to the chat window on login
         local profileName = MountUp.db.keys.profile
         print("|cFFFF69B4MountUp profile successfully loaded: " .. profileName .. "|r")
         print("|cFFFF69B4Use /MountUpHelp for a list of available commands.|r")
-        local options = MountUp:GetOptions()
+
+        local options = MountUp:GetOptions() -- Get the options table
+
+        -- Loop through all mounts, and for each owned mount, add a toggle option to the favorites tab 
         for _, mountID in ipairs(allMountIDs) do
             local creatureName, _, _, _, _, _, _, _, _, _, isCollected, _ = C_MountJournal.GetMountInfoByID(mountID)
             if isCollected then
@@ -269,45 +314,16 @@ function MountUp:OnInitialize()
                 }
             end
         end
-        options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(MountUp.db)
-        LibStub("AceConfig-3.0"):RegisterOptionsTable("MountUp", options)
-        self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("MountUp", "MountUp")
+
+        -- Execute Ace3 to do the things
+        options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(MountUp.db) -- Add profile options
+        LibStub("AceConfig-3.0"):RegisterOptionsTable("MountUp", options) -- Register options table
+        self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("MountUp", "MountUp") -- Add options to blizzard options menu
     end)   
 end
 
+-- Callback function that was registered in the OnInitialize function to print a message when the profile is changed
 function MountUp:OnProfileChanged(event, database, newProfileKey)
     local profileName = database.keys.profile
     print("|cFFFF69B4MountUp profile successfully loaded: " .. profileName .. "|r")
 end
-
--- local f = CreateFrame("Frame")
--- f:RegisterEvent("PLAYER_LOGIN")
--- f:SetScript("OnEvent", function(f, event)
---     if event == "PLAYER_LOGIN" then
---         local profileName = MountUp.db.keys.profile
---         print("|cFFFF69B4MountUp profile successfully loaded: " .. profileName .. "|r")
---         print("|cFFFF69B4Use /MountUpHelp for a list of available commands.|r")
---     end
--- end)
-
-
-SLASH_MountUpOptions1 = "/MountUpOptions"
-SlashCmdList["MountUpOptions"] = function() 
-    InterfaceOptionsFrame_OpenToCategory("MountUp")
-    InterfaceOptionsFrame_OpenToCategory("MountUp")
-end
-
-SLASH_MountUpHelp1 = "/MountUpHelp"
-SlashCmdList["MountUpHelp"] = function()
-    print("|cFFFF69B4-----------------------------------------------|r")
-    print("|cFFFF69B4/MountUp|r" .. " - Summon a random mount based off zone priority.")
-    print("|cFFFF69B4/MountUpFav|r" .. " - Summon a random favorite mount with zone priority.")
-    print("|cFFFF69B4/MountUpFlying|r" .. " - Summon a random flying mount.")
-    print("|cFFFF69B4/MountUpGround|r" .. " - Summon a random ground mount.")
-    print("|cFFFF69B4/MountUpRandom|r" .. " - Summon a random usable mount.")
-    print("|cFFFF69B4/MountUpDragon|r" .. " - Summon a random dragon riding mount.")
-    print("|cFFFF69B4/MountUpOptions|r" .. " - Opens the options menu for MountUp.")
-    print("|cFFFF69B4-----------------------------------------------|r")
-end
-
-

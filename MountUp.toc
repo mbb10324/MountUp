@@ -1,7 +1,7 @@
 ## Interface: 10107
 ## Version: 1.0.0
 ## Title: MountUp
-## Notes: dynamic mount selector
+## Notes: Better Mount Summoner
 ## Author: Miles Breman
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
