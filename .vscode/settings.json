@@ -27,6 +27,7 @@
 		"IsSecureCmd",
 		"NUM_CHAT_WINDOWS",
 		"ChatEdit_GetActiveWindow",
-		"InterfaceOptionsFrame_OpenToCategory"
+		"InterfaceOptionsFrame_OpenToCategory",
+		"UIErrorsFrame"
 	]
 }

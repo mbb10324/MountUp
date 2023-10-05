@@ -29,38 +29,22 @@ local function UpdateMountLists()
     wipe(ownedFlyingMounts)
     wipe(ownedGroundMounts)
 
-    -- Determine all of the owned, and usable mounts in a player's collection
+    -- Iterate through all mount IDs, populating the tables as needed
     for _, mountID in ipairs(allMountIDs) do
         local creatureName, spellID, _, _, isUsable = C_MountJournal.GetMountInfoByID(mountID)
         if isUsable then
-            table.insert(ownedUsableMounts, {name = creatureName, spellID = spellID, mountID = mountID})
+            local mountInfo = {name = creatureName, spellID = spellID, mountID = mountID}
+            table.insert(ownedUsableMounts, mountInfo)
+            local _, _, _, _, mountTypeID, _, _, _, _ = C_MountJournal.GetMountInfoExtraByID(mountID)
+            if mountTypeID == 402 then
+                table.insert(ownedDragonRidingMounts, {mountID = mountID})
+            elseif mountTypeID == 248 or mountTypeID == 424 then
+                table.insert(ownedFlyingMounts, {mountID = mountID})
+            elseif mountTypeID == 230 then
+                table.insert(ownedGroundMounts, {mountID = mountID})
+            end
         end
     end
-
-    -- Determine all of the owned, and usable dragon riding mounts in a player's collection
-    for _, mountInfo in ipairs(ownedUsableMounts) do
-        local _, _, _, _, mountTypeID, _, _, _, _ = C_MountJournal.GetMountInfoExtraByID(mountInfo.mountID)
-        if mountTypeID == 402 then
-            table.insert(ownedDragonRidingMounts, {mountID = mountInfo.mountID})
-        end
-    end
-
-    -- Determine all of the owned, and usable flying mounts in a player's collection
-    for _, mountInfo in ipairs(ownedUsableMounts) do
-        local _, _, _, _, mountTypeID, _, _, _, _ = C_MountJournal.GetMountInfoExtraByID(mountInfo.mountID)
-        if mountTypeID == 248 or mountTypeID == 424 then
-            table.insert(ownedFlyingMounts, {mountID = mountInfo.mountID})
-        end
-    end
-
-    -- Determine all of the owned, and usable ground mounts in a player's collection
-    for _, mountInfo in ipairs(ownedUsableMounts) do
-        local _, _, _, _, mountTypeID, _, _, _, _ = C_MountJournal.GetMountInfoExtraByID(mountInfo.mountID)
-        if mountTypeID == 230 then
-            table.insert(ownedGroundMounts, {mountID = mountInfo.mountID})
-        end
-    end
-
 end
 
 -- Initial mount list update
@@ -71,28 +55,22 @@ UpdateMountLists()
 -------------------------------------------------------------------------------
 
 local frame = CreateFrame("Frame")
-frame:RegisterEvent("ZONE_CHANGED")
-frame:RegisterEvent("ZONE_CHANGED_INDOORS")
-frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-frame:RegisterEvent("PLAYER_LOGIN")
-frame:RegisterEvent("PLAYER_ALIVE")
-frame:RegisterEvent("PLAYER_UNGHOST")
-frame:RegisterEvent("PLAYER_REGEN_ENABLED")
-frame:RegisterEvent("INSTANCE_GROUP_SIZE_CHANGED")
--- Fire the update function when one of the above events is triggered
-frame:SetScript("OnEvent", function(self, event, ...)
-    if event == "ZONE_CHANGED" 
-    or event == "ZONE_CHANGED_INDOORS" 
-    or event == "ZONE_CHANGED_NEW_AREA" 
-    or event == "PLAYER_LOGIN" 
-    or event == "PLAYER_ALIVE"
-    or event == "PLAYER_UNGHOST"
-    or event == "PLAYER_REGEN_ENABLED"
-    or event == "INSTANCE_GROUP_SIZE_CHANGED"  
-    then
-        UpdateMountLists()
-    end
-end)
+local events = {
+    "ZONE_CHANGED",
+    "ZONE_CHANGED_INDOORS",
+    "ZONE_CHANGED_NEW_AREA",
+    "PLAYER_LOGIN",
+    "PLAYER_ALIVE",
+    "PLAYER_UNGHOST",
+    "PLAYER_REGEN_ENABLED",
+    "INSTANCE_GROUP_SIZE_CHANGED"
+}
+
+for _, event in ipairs(events) do
+    frame:RegisterEvent(event)
+end
+
+frame:SetScript("OnEvent", UpdateMountLists)
 
 -------------------------------------------------------------------------------
 -- Functions to mount player under different situations
@@ -109,7 +87,7 @@ function MountPlayerOnSuitableMount()
     elseif #ownedUsableMounts > 0 then -- Can use any mount
         local randomMount = ownedUsableMounts[math.random(#ownedUsableMounts)]
         C_MountJournal.SummonByID(randomMount.mountID)
-    else -- No usable mounts
+    elseif #ownedUsableMounts <= 0 then -- No usable mounts
         print("No usable mounts found in your collection.")
     end
 end
@@ -119,7 +97,7 @@ function MountPlayerOnDragonRidingMount()
     if #ownedDragonRidingMounts > 0 then  -- Can use dragon riding mount
         local randomMount = ownedDragonRidingMounts[math.random(#ownedDragonRidingMounts)]
         C_MountJournal.SummonByID(randomMount.mountID)
-    else
+    elseif #ownedDragonRidingMounts <= 0 then -- No usable dragon riding mounts
         print("No usable dragon riding mounts found in your collection.")
     end
 end 
@@ -129,7 +107,7 @@ function MountPlayerOnFlyingMount()
     if #ownedFlyingMounts > 0 then  -- Can use flying mount
         local randomMount = ownedFlyingMounts[math.random(#ownedFlyingMounts)]
         C_MountJournal.SummonByID(randomMount.mountID)
-    else
+    elseif #ownedFlyingMounts <= 0 then -- No usable flying mounts
         print("No usable flying mounts found in your collection.")
     end
 end
@@ -139,7 +117,7 @@ function MountPlayerOnGroundMount()
     if #ownedGroundMounts > 0 then  -- Can use ground mount
         local randomMount = ownedGroundMounts[math.random(#ownedGroundMounts)]
         C_MountJournal.SummonByID(randomMount.mountID)
-    else
+    elseif #ownedGroundMounts <= 0 then -- No usable ground mounts
         print("No usable ground mounts found in your collection.")
     end
 end
@@ -149,7 +127,7 @@ function MountPlayerOnRandomUsableMount()
     if #ownedUsableMounts > 0 then  -- Can use any mount
         local randomMount = ownedUsableMounts[math.random(#ownedUsableMounts)]
         C_MountJournal.SummonByID(randomMount.mountID)
-    else
+    elseif #ownedUsableMounts <= 0 then -- No usable mounts
         print("No usable mounts found in your collection.")
     end
 end
