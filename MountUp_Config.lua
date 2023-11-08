@@ -234,8 +234,13 @@ function MountUp:FilterMounts(searchQuery)
         options.args.favoritesTab.args.noResults = {
             type = "description",
             name = "No results found",
-            order = increment() + 4
+            order = increment() + 4,
+            hidden = false
         }
+    end
+
+    if not noResultsFound and options.args.favoritesTab.args.noResults then
+        options.args.favoritesTab.args.noResults.hidden = true -- Or use the appropriate method to remove the entry
     end
 end
 
@@ -269,6 +274,30 @@ function MountUp:ShowFavorites()
     end
 end
 
+-- Update the owned mounts table and the favorites tab
+function MountUp:UpdateOwnedMounts()
+    wipe(allOwnedMounts) -- Clear the allOwnedMounts table
+    local options = self.options -- Get the current options
+
+    -- Loop through all mounts, and for each owned mount, add a toggle option to the favorites tab 
+    for _, mountID in ipairs(allMountIDs) do
+        local creatureName, _, _, _, _, _, _, _, _, _, isCollected, _ = C_MountJournal.GetMountInfoByID(mountID)
+        if isCollected then
+            local key = "mount_"..mountID
+            table.insert(allOwnedMounts, {name = creatureName, mountID = mountID})
+            options.args.favoritesTab.args[key] = {
+                type = "toggle",
+                name = creatureName,
+                desc = "Add this mount to favorites",
+                order = increment() + 4,
+                get = function() return MountUpFavorites:IsFavorite(mountID) end,
+                set = function(_, value) MountUpFavorites:SetFavorite(mountID, value) end,
+                hidden = false
+            }
+        end
+    end
+end
+
 -------------------------------------------------------------------------------
 -- Initialization function
 -------------------------------------------------------------------------------
@@ -282,43 +311,37 @@ function MountUp:OnInitialize()
     }
     -- Player login event to fire our initializations 
     local frame = CreateFrame("FRAME", "SavedVarsFrame");
-    frame:RegisterEvent("PLAYER_LOGIN")
+    local events = {
+        "PLAYER_LOGIN",
+        "NEW_MOUNT_ADDED",
+    }
+    for _, event in ipairs(events) do
+        frame:RegisterEvent(event)
+    end
     frame:SetScript("OnEvent", function(self, event, arg1)
-        self:UnregisterEvent("PLAYER_LOGIN")
+        if event == "NEW_MOUNT_ADDED" then
+            MountUp:UpdateOwnedMounts()
+        elseif event == "PLAYER_LOGIN" then
+            self:UnregisterEvent("PLAYER_LOGIN") -- Unregister the event so it doesn't fire again
 
-        MountUp.db = LibStub("AceDB-3.0"):New("MountUpDB", defaults, true) -- Define the database using AceDB
+            MountUp.db = LibStub("AceDB-3.0"):New("MountUpDB", defaults, true) -- Define the database using AceDB
+            MountUp.db.RegisterCallback(MountUp, "OnProfileChanged", "OnProfileChanged") -- Register callback for profile changes
 
-        MountUp.db.RegisterCallback(MountUp, "OnProfileChanged", "OnProfileChanged") -- Register callback for profile changes
+            -- Print the current profile name to the chat window on login
+            local profileName = MountUp.db.keys.profile
+            print("|cFFFF69B4MountUp profile successfully loaded: " .. profileName .. "|r")
+            print("|cFFFF69B4Use /MountUpHelp for a list of available commands.|r")
 
-        -- Print the current profile name to the chat window on login
-        local profileName = MountUp.db.keys.profile
-        print("|cFFFF69B4MountUp profile successfully loaded: " .. profileName .. "|r")
-        print("|cFFFF69B4Use /MountUpHelp for a list of available commands.|r")
+            local options = MountUp:GetOptions() -- Get the options table
+            MountUp:UpdateOwnedMounts() -- Update the owned mounts table
 
-        local options = MountUp:GetOptions() -- Get the options table
-
-        -- Loop through all mounts, and for each owned mount, add a toggle option to the favorites tab 
-        for _, mountID in ipairs(allMountIDs) do
-            local creatureName, _, _, _, _, _, _, _, _, _, isCollected, _ = C_MountJournal.GetMountInfoByID(mountID)
-            if isCollected then
-                local key = "mount_"..mountID
-                table.insert(allOwnedMounts, {name = creatureName, mountID = mountID})
-                options.args.favoritesTab.args[key] = {
-                    type = "toggle",
-                    name = creatureName,
-                    desc = "Add this mount to favorites",
-                    order = increment() + 4,
-                    get = function() return MountUpFavorites:IsFavorite(mountID) end,
-                    set = function(_, value) MountUpFavorites:SetFavorite(mountID, value) end,
-                    hidden = false
-                }
+            -- Execute Ace3 to do the things
+            if not self.optionsFrame then
+                options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(MountUp.db) -- Add profile options
+                LibStub("AceConfig-3.0"):RegisterOptionsTable("MountUp", options) -- Register options table
+                self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("MountUp", "MountUp") -- Add options to blizzard options menu
             end
         end
-
-        -- Execute Ace3 to do the things
-        options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(MountUp.db) -- Add profile options
-        LibStub("AceConfig-3.0"):RegisterOptionsTable("MountUp", options) -- Register options table
-        self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("MountUp", "MountUp") -- Add options to blizzard options menu
     end)   
 end
 

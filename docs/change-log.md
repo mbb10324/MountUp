@@ -1,3 +1,11 @@
+MountUp-v1.0.4:
+
+-   Verified all functionality with 10.2
+-   Previously you would have to /reload to update MountUp to be aware of a new mount after learning one. MountUp properly will now automatically update its lists when a new mount is learned.
+-   Fixed a bug on the favorites tab when you searched for a mount and the "No Results Found" message was displayed, it would stay shown until a reload would occur.
+-   Fixed a bug where the options frame would occasionally try to recreate itself after a reload.
+-   Cleaned up the code base. Separated more logic out into functions, and updated documentation/comments.
+
 MountUp-v1.0.3:
 
 -   Standardized naming conventions for certain variables

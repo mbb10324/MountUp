@@ -11,7 +11,6 @@
 local allMountIDs = _G.MountUpAllMountIDs -- All mount IDs in the game from MountUp_Config.lua
 local MountUpFavorites = _G.MountUpFavorites -- All favorite mounts from MountUp_Favorites.lua
 
-
 -- Local Tables
 local ownedUsableMounts = {} -- All usable mounts in player's collection
 local ownedDragonRidingMounts = {} -- All dragon riding mounts in player's collection
@@ -63,7 +62,8 @@ local events = {
     "PLAYER_ALIVE",
     "PLAYER_UNGHOST",
     "PLAYER_REGEN_ENABLED",
-    "INSTANCE_GROUP_SIZE_CHANGED"
+    "INSTANCE_GROUP_SIZE_CHANGED",
+    "NEW_MOUNT_ADDED",
 }
 
 for _, event in ipairs(events) do
