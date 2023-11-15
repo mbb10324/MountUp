@@ -35,12 +35,14 @@ local function UpdateMountLists()
             local mountInfo = {name = creatureName, spellID = spellID, mountID = mountID}
             table.insert(ownedUsableMounts, mountInfo)
             local _, _, _, _, mountTypeID, _, _, _, _ = C_MountJournal.GetMountInfoExtraByID(mountID)
-            if mountTypeID == 402 then
-                table.insert(ownedDragonRidingMounts, {mountID = mountID})
-            elseif mountTypeID == 248 or mountTypeID == 424 then
-                table.insert(ownedFlyingMounts, {mountID = mountID})
-            elseif mountTypeID == 230 then
-                table.insert(ownedGroundMounts, {mountID = mountID})
+            if #ownedUsableMounts > 0 then
+                if mountTypeID == 402 then
+                    table.insert(ownedDragonRidingMounts, {mountID = mountID})
+                elseif mountTypeID == 248 or mountTypeID == 424 then
+                    table.insert(ownedFlyingMounts, {mountID = mountID})
+                elseif mountTypeID == 230 then
+                    table.insert(ownedGroundMounts, {mountID = mountID})
+                end
             end
         end
     end
@@ -64,6 +66,7 @@ local events = {
     "PLAYER_REGEN_ENABLED",
     "INSTANCE_GROUP_SIZE_CHANGED",
     "NEW_MOUNT_ADDED",
+    "PLAYER_ENTERING_WORLD",
 }
 
 for _, event in ipairs(events) do
@@ -78,7 +81,7 @@ frame:SetScript("OnEvent", UpdateMountLists)
 
 -- Mount player on a random mount based on zone precendence
 function MountPlayerOnSuitableMount()
-    if IsUsableSpell(368896) then -- Can use dragon riding mount
+    if IsUsableSpell(368896) and #ownedDragonRidingMounts > 0 then -- Can use dragon riding mount
         local randomMount = ownedDragonRidingMounts[math.random(#ownedDragonRidingMounts)]
         C_MountJournal.SummonByID(randomMount.mountID)
     elseif IsFlyableArea() and #ownedFlyingMounts > 0 then -- Can use flying mount
@@ -87,7 +90,7 @@ function MountPlayerOnSuitableMount()
     elseif #ownedUsableMounts > 0 then -- Can use any mount
         local randomMount = ownedUsableMounts[math.random(#ownedUsableMounts)]
         C_MountJournal.SummonByID(randomMount.mountID)
-    elseif #ownedUsableMounts <= 0 then -- No usable mounts
+    else -- No usable mounts
         print("No usable mounts found in your collection.")
     end
 end

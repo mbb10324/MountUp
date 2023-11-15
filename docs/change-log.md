@@ -1,3 +1,8 @@
+MountUp-v1.0.5:
+
+-   Fixed a bug when attempting to summon dragon riding mounts that would occasionally cause lua erros.
+-   Added PLAYER_ENTERING_WORLD to the mount update list.
+
 MountUp-v1.0.4:
 
 -   Verified all functionality with 10.2
