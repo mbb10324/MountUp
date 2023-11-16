@@ -12,7 +12,7 @@ Thank you for considering contributing to MountUp!
 
 ### Suggesting Enhancements
 
--   Detail your suggestion in an issue. Explain the use case and why it would be useful to most react-onus users. Don't just tell what you want, but explain why.
+-   Detail your suggestion in an issue. Explain the use case and why it would be useful to most MountUp users. Don't just tell what you want, but explain why.
 
 -   Provide a clear use case. Your use case should be one that is beneficial to the wider community, not just something that you'd find useful.
 
@@ -22,7 +22,7 @@ Thank you for considering contributing to MountUp!
 
 ### Development Environment
 
-Given the nature of MountUp being a AddOn for World of Warcraft, it is crucial to ensure that any changes made in the AddOn do not break features in the already included. Ensure you run and test any changes in a game environment.
+Given that MountUp is an add-on for World of Warcraft; it is crucial to ensure that any changes made in the add-on do not break features that the add-on already provides, or cause in game errors. Ensure you run and test any changes in a game environment.
 
 ### Code Style
 
