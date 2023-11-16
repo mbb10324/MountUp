@@ -16,7 +16,7 @@ Thank you for considering contributing to MountUp!
 
 -   Provide a clear use case. Your use case should be one that is beneficial to the wider community, not just something that you'd find useful.
 
--   Update the README.md with details of changes to the AddOn, this includes new environment variables, exposed ports, useful file locations, and container parameters.
+-   Update the README.md with details of changes to the add-on, this includes new environment variables, exposed ports, useful file locations, and container parameters.
 
 -   Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent. The versioning scheme we use is SemVer.
 
