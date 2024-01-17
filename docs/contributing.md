@@ -27,7 +27,7 @@ Thank you for considering contributing to MountUp!
 
 ### Development Environment
 
-Given the nature of MountUp being a AddOn for World of Warcraft, it is crucial to ensure that any changes made in the AddOn do not break features that the AddOn already provides, or within the game at large. Ensure you run and test any changes in a game environment.
+Given that MountUp is an add-on for World of Warcraft; it is crucial to ensure that any changes made in the AddOn do not break features that the AddOn already provides, or cause in game errors. Ensure you run and test any changes in a game environment.
 
 ### Code Style
 
