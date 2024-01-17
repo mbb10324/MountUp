@@ -1,3 +1,8 @@
+MountUp-v1.0.6:
+
+-   Verified all functionality with 10.2.5
+-   Updated/Added documentation
+
 MountUp-v1.0.5:
 
 -   Fixed a bug when attempting to summon dragon riding mounts that would occasionally cause lua erros.

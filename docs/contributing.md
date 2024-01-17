@@ -12,17 +12,22 @@ Thank you for considering contributing to MountUp!
 
 ### Suggesting Enhancements
 
--   Detail your suggestion in an issue. Explain the use case and why it would be useful to most react-onus users. Don't just tell what you want, but explain why.
+-   Ensure your suggestion was not already made by searching on GitHub under Issues.
+
+-   You can suggest enhancements in 1 of 2 ways:
+
+    1. Create an issue on GitHub with the `enhancement` label.
+    2. Fork the repository, create a branch, make your changes, and submit a pull request.
+
+-   Detail your suggestion in an issue/pully. Explain the use case and why it would be useful to most MountUp users. Don't just tell what you want, but explain why.
 
 -   Provide a clear use case. Your use case should be one that is beneficial to the wider community, not just something that you'd find useful.
 
--   Update the README.md with details of changes to the AddOn, this includes new environment variables, exposed ports, useful file locations, and container parameters.
-
--   Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent. The versioning scheme we use is SemVer.
+-   If opening a pully; update the version number in the `MountUp.toc` file to the next appropriate version number utilizing semVer, and add a new entry to the `/docs/change-log.md` file with a bulleted summary of changes.
 
 ### Development Environment
 
-Given the nature of MountUp being a AddOn for World of Warcraft, it is crucial to ensure that any changes made in the AddOn do not break features in the already included. Ensure you run and test any changes in a game environment.
+Given the nature of MountUp being a AddOn for World of Warcraft, it is crucial to ensure that any changes made in the AddOn do not break features that the AddOn already provides, or within the game at large. Ensure you run and test any changes in a game environment.
 
 ### Code Style
 
