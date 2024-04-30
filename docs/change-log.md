@@ -1,7 +1,7 @@
 MountUp-v1.0.8:
 
 -   Instead of checking a `mountTypeID` for wether or not a mount is a dragon riding mount, we now check the new `isForDragonriding` boolean exposed by the API. This should allow for a more accurate check for dragon riding mounts.
--   Fixed a bug iintroduced in 10.2.6 where a dragonriding mount would always be summoned in a ground mount area with `MountUpFav` and the `MountUp` slash commands.
+-   Fixed a bug introduced in 10.2.6 where a dragonriding mount would always be summoned in a ground mount area with the `MountUpFav` and the `MountUp` slash commands.
 
 MountUp-v1.0.7:
 
