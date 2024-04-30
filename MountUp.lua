@@ -30,13 +30,13 @@ local function UpdateMountLists()
 
     -- Iterate through all mount IDs, populating the tables as needed
     for _, mountID in ipairs(allMountIDs) do
-        local creatureName, spellID, _, _, isUsable = C_MountJournal.GetMountInfoByID(mountID)
+        local creatureName, spellID, _, _, isUsable, _, _, _, _, _, _, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
         if isUsable then
             local mountInfo = {name = creatureName, spellID = spellID, mountID = mountID}
             table.insert(ownedUsableMounts, mountInfo)
             local _, _, _, _, mountTypeID, _, _, _, _ = C_MountJournal.GetMountInfoExtraByID(mountID)
             if #ownedUsableMounts > 0 then
-                if mountTypeID == 402 then
+                if isForDragonriding then
                     table.insert(ownedDragonRidingMounts, {mountID = mountID})
                 elseif mountTypeID == 248 or mountTypeID == 424 then
                     table.insert(ownedFlyingMounts, {mountID = mountID})
@@ -81,6 +81,10 @@ frame:SetScript("OnEvent", UpdateMountLists)
 
 -- Mount player on a random mount based on zone precendence
 function MountPlayerOnSuitableMount()
+    if not IsFlyableArea() and #ownedUsableMounts > 0 then
+        local randomMount = ownedUsableMounts[math.random(#ownedUsableMounts)]
+        C_MountJournal.SummonByID(randomMount.mountID)
+    end
     if IsUsableSpell(368896) and #ownedDragonRidingMounts > 0 then -- Can use dragon riding mount
         local randomMount = ownedDragonRidingMounts[math.random(#ownedDragonRidingMounts)]
         C_MountJournal.SummonByID(randomMount.mountID)
