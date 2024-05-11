@@ -1,5 +1,5 @@
-## Interface: 100206
-## Version: 1.0.8
+## Interface: 100207
+## Version: 1.0.9
 ## Title: MountUp
 ## Notes: Better Mount Summoner
 ## Author: Miles Breman

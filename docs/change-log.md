@@ -1,3 +1,7 @@
+MountUp-v1.0.9:
+
+-   Verified all functionality with 10.2.7
+
 MountUp-v1.0.8:
 
 -   Instead of checking a `mountTypeID` for wether or not a mount is a dragon riding mount, we now check the new `isForDragonriding` boolean exposed by the API. This should allow for a more accurate check for dragon riding mounts.
