@@ -43,7 +43,6 @@ end
 function MountUpFavorites:MountPlayerOnSuitableFavorite()
     local favorites = self:GetFavorites() -- all favorite mounts
     local favoriteUsable = {} -- all usable favorite mounts
-    local favoriteDragonRiding = {} -- all usable favorite dragon riding mounts
     local favoriteFlying = {} -- all usable favorite flying mounts
 
     if #favorites == 0 then -- No favorites
@@ -61,11 +60,8 @@ function MountUpFavorites:MountPlayerOnSuitableFavorite()
 
     -- Determine all of the favorite dragon riding and flying mounts
     for _, mountID in ipairs(favorites) do
-        local _, _, _, _, _, _, _, _, _, _, _, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
         local _, _, _, _, mountTypeID, _, _, _ = C_MountJournal.GetMountInfoExtraByID(mountID)
-        if isForDragonriding then -- Is dragon riding mount
-            table.insert(favoriteDragonRiding, {mountID = mountID})
-        elseif mountTypeID == 248 or mountTypeID == 424 then -- Is flying mount
+        if mountTypeID == 248 or mountTypeID == 424 or mountTypeID == 402 then -- Is flying mount
             table.insert(favoriteFlying, {mountID = mountID})
         end
     end
@@ -75,10 +71,7 @@ function MountUpFavorites:MountPlayerOnSuitableFavorite()
         C_MountJournal.SummonByID(randomMount.mountID)
     end
 
-    if IsUsableSpell(368896) and #favoriteDragonRiding > 0 then -- Can use dragon riding mount
-        local randomMount = favoriteDragonRiding[math.random(#favoriteDragonRiding)]
-        C_MountJournal.SummonByID(randomMount.mountID)
-    elseif IsFlyableArea() and #favoriteFlying > 0 then -- Can use flying mount
+    if IsFlyableArea() and #favoriteFlying > 0 then -- Can use flying mount
         local randomMount = favoriteFlying[math.random(#favoriteFlying)]
         C_MountJournal.SummonByID(randomMount.mountID)
     elseif #favoriteUsable > 0 then -- Can use any mount

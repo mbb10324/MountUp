@@ -1,3 +1,11 @@
+MountUp-v1.1.0:
+
+-   Due to the changes in the API, the `isForDragonriding` boolean is no longer available. We have reverted back to checking the `mountTypeID` to determine if a mount is a dragon riding or flying mount.
+-   Since all flying mounts now have the capability to dragon ride, we have removed the notion of specific dragon riding mounts. All dragon riding mounts will now be treated as flying mounts.
+-   Due to the above changes we removed the Slash command for `/MountUpDragon` as it is no longer needed.
+-   Updated the `MountUp` and `MountUp_Favorites` files to reflect the above changes.
+-   Verified all functionality with 11.0.0
+
 MountUp-v1.0.9:
 
 -   Verified all functionality with 10.2.7
